@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import spade.core.AuthSSLSocketFactory; //added due to cleartext vuln
 
 public class ChatFrame extends Frame{
 	public ChatFrame(){
@@ -96,9 +97,14 @@ class ChatPanel extends Panel implements ActionListener, ItemListener, Runnable{
 					try{
 						firstConnected = true;
 						
-						s = new Socket("127.0.0.1", 3000);
-						oos = new ObjectOutputStream(s.getOutputStream());
-						ois = new ObjectInputStream(s.getInputStream());
+						//these 3 lines are added due to Snyk vulnerabilities.
+						InetSocketAddress sockaddr = new InetSocketAddress("localhost", 3000);
+						oos = AuthSSLSocketFactory.getSocket(remoteSocket, sockaddr, "DAWOOD_READ_FROM_CONFIG");
+						oos = AuthSSLSocketFactory.getSocket(remoteSocket, sockaddr, "DAWOOD_READ_FROM_CONFIG");
+
+						//s = new Socket("127.0.0.1", 3000);
+						oos = s.getOutputStream(); //removed object declaration due to vulnerability
+						ois = s.getInputStream(); //removed object declaration due to vulnerability
 						
 						thread = new Thread(this);
 						thread.start();

@@ -36,8 +36,8 @@ class ChatHandler extends Thread{
 	}
 	public void run(){
 		try{
-			in = new ObjectInputStream(incoming.getInputStream());
-			out = new ObjectOutputStream(incoming.getOutputStream());
+			in = new incoming.getInputStream(); //removed due to Snyk vulnerabiliy
+			out = new incoming.getOutputStream(); //removed due to Snyk vuln
 
 			boolean done = false;
 			
